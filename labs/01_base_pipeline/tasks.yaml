@@ -1,6 +1,87 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: <place-name-here>
+  name: echo
 spec:
+  params:
+    - name: message
+      description: The message to echo
+      type: string
   steps:
+    - name: echo-message
+      image: alpine:3
+      command: [/bin/echo]
+      args: ["$(params.message)"]
+
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: checkout
+spec:
+  params:
+    - name: repo-url
+      description: The URL of the git repo to clone
+      type: string
+    - name: branch
+      description: The branch to clone
+      type: string
+  steps:
+    - name: checkout
+      image: bitnami/git:latest
+      command: [git]
+      args: ["clone", "--branch", "$(params.branch)", "$(params.repo-url)"]
+
+# # Lint task    
+# ---
+# apiVersion: tekton.dev/v1beta1
+# kind: Task
+# metadata:
+#   - name: lint
+# spec:
+#   steps:
+#     - name: Installing Flake8
+#       image: bitnami/git:latest
+#       command: [pip]
+#       args: ["install", "flake8"]
+#     - name: running "flake8
+#       image: bitnami/git:latest
+#       command: [flake8]
+#       args: ["."]
+
+# # test task
+# ---
+# apiVersion: tekton.dev/v1beta1
+# kind: Task
+# metadata:
+#   - name: tests
+# spec:
+#   steps:
+#     - name:  Running tests
+#       image: bitnami/git:latest
+#       command: [python]
+#       args: ["-m", "unittest", "discover", "-s", "tests"]
+
+# # build task
+# ---
+# apiVersion: tekton.dev/v1beta1
+# kind: Task
+# metadata:
+#   - name: build
+# spec:
+#   steps:
+#     - name: build
+#       command:
+#       args:
+
+# # Deployment task
+# ---
+# apiVersion: tekton.dev/v1beta1
+# kind: Task
+# metadata:
+#   - name: deploy
+# spec:
+#   steps:
+#     - name: deploy
+#       command:
+#       args:
